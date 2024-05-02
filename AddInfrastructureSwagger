@@ -40,6 +40,6 @@ public static class DependencyInjectionSwagger
             Array.Empty<string>()
         }
          });
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Clio", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "", Version = "v1" });
         });
     }
