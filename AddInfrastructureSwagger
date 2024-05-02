@@ -1,0 +1,45 @@
+public static class DependencyInjectionSwagger
+{
+    public static void AddInfrastructureSwagger(this IServiceCollection services)
+    {
+        services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(x =>
+        {
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(StringHelper.TokenKey)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+
+        services.AddSwaggerGen(c =>
+        {
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Json Web Token (JWT)"
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {{
+            new OpenApiSecurityScheme()
+            {
+                Reference = new OpenApiReference()
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+         });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Clio", Version = "v1" });
+        });
+    }
